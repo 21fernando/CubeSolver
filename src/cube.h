@@ -3,4 +3,6 @@
 
 void printCube();
 
+char* solve();
+
 #endif

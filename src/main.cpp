@@ -661,7 +661,7 @@ void translateMove(char *in, char *result){
   for(int i=0; i<4; i++){
     if(arms[i].face == *in){
       rotationNeeded = false;
-      move[0] = arms[i].absFaced;
+      move[0] = arms[i].absFace;
       if(in[1] != '\0'){
         move[1] = in[1];
       }
@@ -689,4 +689,8 @@ void translateMove(char *in, char *result){
     } 
   }
   strcpy(result, move);
+}
+
+void scanCube(){
+  
 }
