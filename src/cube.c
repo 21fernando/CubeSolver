@@ -3,19 +3,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include "cube.h"
 
-void printCube();
-void initCube();
-void rotateFace(char face, bool prime);
-int *getCol(char face, int col);
-int *getRow(char face, int row);
-void setRow(char face, int row, int*val);
-void setCol(char face, int col, int*val);
-int *invert(int *in);
-void move(char* move);
-int face(char f);
-
-static int cube[6][3][3];
+int cube[6][3][3];
 
 void printArray(int* in_p, int l){
     printf("[");
@@ -54,6 +44,18 @@ void initCube(){
         for(int r = 0; r<3; r++){
             for(int c=0; c<3; c++){
                 cube[i][r][c] = *(colors + i);
+            }
+        }
+    }
+}
+
+void initCubeFromString(char* input){
+    int i = 0; 
+    for(int f=0; f<6; f++){
+        for(int r = 0; r<3; r++){
+            for(int c=0; c<3; c++){
+                cube[f][r][c] = *(input + i);
+                i++;
             }
         }
     }
@@ -119,7 +121,7 @@ int *getRow(char f, int row){
     }
     return row_p;
 }
-//overload this method, keep this, but add one with a internal call to getro
+
 void setRow(char f, int row, int*val){
     int fint = face(f);
     for(int i=0; i<3; i++){
@@ -141,11 +143,10 @@ int *invert(int *in){
     return in;
 }
 
-
-void move(char* move){
+void turn(char* turn){
     int *t = NULL;
     int *temp = NULL;
-    if(!strncmp(move, "R", 2)){
+    if(!strncmp(turn, "R", 2)){
         rotateFace('R', false);
         temp = getCol('F',2);
         t = getCol('D', 2);
@@ -158,7 +159,7 @@ void move(char* move){
         setCol('B', 0, invert(getCol('U', 2)));
         free(t);
         setCol('U', 2, temp);
-    }else if(!strncmp(move, "F", 2)){
+    }else if(!strncmp(turn, "F", 2)){
         rotateFace('F', false);
         temp = getRow('U',2);
         t = invert(getCol('L', 2));
@@ -171,7 +172,7 @@ void move(char* move){
         setRow('D', 0, t);
         free(t);
         setCol('R', 0, temp);
-    }else if(!strncmp(move, "L", 2)){
+    }else if(!strncmp(turn, "L", 2)){
         rotateFace('L', false);
         temp = getCol('F',0);
         t = getCol('U', 0);
@@ -184,7 +185,7 @@ void move(char* move){
         setCol('B', 2, t);
         free(t);
         setCol('D', 0, temp);
-    }else if(!strncmp(move, "B", 2)){
+    }else if(!strncmp(turn, "B", 2)){
         rotateFace('B', false);
         temp = getRow('U',0);
         t = getCol('R', 2);
@@ -197,7 +198,7 @@ void move(char* move){
         setRow('D', 2, t);
         free(t);
         setCol('L', 0, invert(temp));
-    }else if(!strncmp(move, "U", 2)){
+    }else if(!strncmp(turn, "U", 2)){
         rotateFace('U', false);
         temp = getRow('F',0);
         t = getRow('R', 0);
@@ -210,7 +211,7 @@ void move(char* move){
         setRow('B', 0, t);
         free(t);
         setRow('L', 0, temp);
-    }else if(!strncmp(move, "D", 2)){
+    }else if(!strncmp(turn, "D", 2)){
         rotateFace('D', false);
         temp = getRow('F',2);
         t = getRow('L', 2);
@@ -225,7 +226,7 @@ void move(char* move){
         setRow('R', 2, temp);
     }
     //Prime
-    else if(!strncmp(move, "R'", 2)){
+    else if(!strncmp(turn, "R'", 2)){
         rotateFace('R', true);
         temp = getCol('F',2);
         t = getCol('U', 2);
@@ -238,7 +239,7 @@ void move(char* move){
         setCol('B', 0, t);
         free(t);
         setCol('D', 2, temp);
-    }else if(!strncmp(move, "F'", 2)){
+    }else if(!strncmp(turn, "F'", 2)){
         rotateFace('F', true);
         temp = getRow('U',2);
         t = getCol('R', 0);
@@ -251,7 +252,7 @@ void move(char* move){
         setRow('D', 0, t);
         free(t);
         setCol('L', 2, invert(temp));
-    }else if(!strncmp(move, "L'", 2)){
+    }else if(!strncmp(turn, "L'", 2)){
         rotateFace('L', true);
         temp = getCol('F',0);
         t = getCol('D', 0);
@@ -264,7 +265,7 @@ void move(char* move){
         setCol('B', 2, t);
         free(t);
         setCol('U', 0, temp);   
-    }else if(!strncmp(move, "B'", 2)){
+    }else if(!strncmp(turn, "B'", 2)){
         rotateFace('B', true);
         temp = getRow('U',0);
         t = invert(getCol('L', 0));
@@ -277,7 +278,7 @@ void move(char* move){
         setRow('D', 2, t);
         free(t);
         setCol('R', 2, temp);
-    }else if(!strncmp(move, "U'", 2)){
+    }else if(!strncmp(turn, "U'", 2)){
         rotateFace('U', true);
         temp = getRow('F',0);
         t = getRow('L', 0);
@@ -290,7 +291,7 @@ void move(char* move){
         setRow('B', 0, t);
         free(t);
         setRow('R', 0, temp);   
-    }else if(!strncmp(move, "D'", 2)){
+    }else if(!strncmp(turn, "D'", 2)){
         rotateFace('D', true);
         temp = getRow('F',2);
         t = getRow('R', 2);
@@ -305,7 +306,7 @@ void move(char* move){
         setRow('L', 2, temp);
     }
     //2x
-    else if(!strncmp(move, "R2", 2)){
+    else if(!strncmp(turn, "R2", 2)){
         rotateFace('R', true);
         rotateFace('R', true);
         temp = getCol('U', 2);
@@ -318,7 +319,7 @@ void move(char* move){
         setCol('F', 2, t);
         free(t);
         setCol('B', 0, invert(temp));
-    }else if(!strncmp(move, "F2", 2)){
+    }else if(!strncmp(turn, "F2", 2)){
         rotateFace('F', true);
         rotateFace('F', true);
         temp = getRow('U', 2);
@@ -331,7 +332,7 @@ void move(char* move){
         setCol('L', 2, t);
         free(t);
         setCol('R', 0, invert(temp));
-    }else if(!strncmp(move, "L2", 2)){
+    }else if(!strncmp(turn, "L2", 2)){
         rotateFace('L', true);
         rotateFace('L', true);
         temp = getCol('U', 0);
@@ -344,7 +345,7 @@ void move(char* move){
         setCol('F', 0, t);
         free(t);
         setCol('B', 2, invert(temp));
-    }else if(!strncmp(move, "B2", 2)){
+    }else if(!strncmp(turn, "B2", 2)){
         rotateFace('B', true);
         rotateFace('B', true);
         temp = getRow('U', 0);
@@ -357,7 +358,7 @@ void move(char* move){
         setCol('L', 0, t);
         free(t);
         setCol('R', 2, invert(temp));
-    }else if(!strncmp(move, "U2", 2)){
+    }else if(!strncmp(turn, "U2", 2)){
         rotateFace('U', true);
         rotateFace('U', true);
         temp = getRow('F', 0);
@@ -370,7 +371,7 @@ void move(char* move){
         setRow('L', 0, t);
         free(t);
         setRow('R', 0, temp);
-    }else if(!strncmp(move, "D2", 2)){
+    }else if(!strncmp(turn, "D2", 2)){
         rotateFace('D', true);
         rotateFace('D', true);
         temp = getRow('F', 2);
@@ -387,20 +388,20 @@ void move(char* move){
     free(temp);
 }
 
-void executeSequence(char* seq){
+void executeSequence(char* s){
+    char *seq = strdup(s);
     char* m = strtok(seq, " ");
     while(m  != NULL){
-        move(m);
-        printf("%s\n", m);
-        printCube();
+        turn(m);
         m = strtok(NULL, " ");
     }
+    free(seq);
 }
 
-int main(){
+/**int main(){
     initCube();
-    char sequence[] = "L2 D' U2 F' R' D2 F2 B2 L2 D U' R2 U2 L' U2 D' R2 U L2 R' U2 F' R2 F' R" ;
+    char sequence[] = "L2 D' U2 F' R' D2 F2 B2 L2 D U' R2 U2 L' U2 D' R2 U L2 R' U2 F' R2 F' R";
     executeSequence(sequence);
     printf("DONE\n");
     return EXIT_SUCCESS;
-}
+}**/
