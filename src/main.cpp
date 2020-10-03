@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include <math.h>
-#include "cube.h"
 #define WALL_MIN_POSITION 736l
 #define WALL_MID_POSITION 1673l
 #define WALL_MAX_POSITION 2640l
