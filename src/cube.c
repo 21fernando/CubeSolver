@@ -396,6 +396,7 @@ void executeSequence(char* s){
         m = strtok(NULL, " ");
     }
     free(seq);
+
 }
 
 /**int main(){
